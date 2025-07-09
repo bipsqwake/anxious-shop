@@ -1,0 +1,3 @@
+appconfig:
+  cors:
+    origins: http://anxiousbasil.com, https://anxiousbasil.com

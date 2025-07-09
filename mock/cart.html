@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .cart-container {
+      max-width: 650px;
+      margin: 3.5rem auto 0 auto;
+      background: var(--card-bg);
+      border-radius: 2.2rem;
+      box-shadow: 0 2px 24px 0 rgba(60,90,80,0.06);
+      padding: 2.5rem 1.3rem 2.2rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.1rem;
+    }
+    .cart-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 1.04rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1.4rem;
+      padding: 0.2em 0.7em 0.2em 0.1em;
+      border-radius: var(--radius);
+      transition: background 0.15s, color 0.15s;
+    }
+    .cart-back-btn:active, .cart-back-btn:hover {
+      background: #e9e6de;
+      color: var(--accent-light);
+    }
+    .cart-back-btn svg {
+      width: 1.3em;
+      height: 1.3em;
+      display: inline-block;
+      vertical-align: middle;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+    }
+    .cart-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      margin: 0 0 2.2rem 0;
+      padding: 0;
+    }
+    .cart-item {
+      display: flex;
+      gap: 1.3rem;
+      align-items: center;
+      background: #f4eee0;
+      border-radius: 1.2rem;
+      padding: 1.1rem 1.4rem;
+      box-shadow: 0 1px 8px 0 rgba(60,90,80,0.05);
+    }
+    .cart-item-img {
+      width: 74px;
+      height: 98px;
+      object-fit: cover;
+      border-radius: 0.7rem;
+      background: #ededed;
+      flex-shrink: 0;
+    }
+    .cart-item-info {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .cart-item-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.19rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+    .cart-item-price {
+      font-size: 1.04rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.1rem;
+    }
+    .cart-item-sum {
+      font-size: 0.99rem;
+      color: var(--text-sec);
+      font-weight: 500;
+      margin-top: 0.15rem;
+    }
+    .cart-item-counter {
+      min-width: 96px;
+      margin-left: 1.2rem;
+      flex-shrink: 0;
+    }
+    .cart-delivery {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      margin-bottom: 0.7rem;
+    }
+    .cart-delivery-label {
+      font-size: 1.06rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.3em;
+    }
+    .cart-delivery-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .cart-radio {
+      display: flex;
+      align-items: center;
+      gap: 0.45em;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--accent);
+      cursor: pointer;
+      user-select: none;
+    }
+    .cart-radio input[type="radio"] {
+      accent-color: var(--accent);
+      width: 1.06em;
+      height: 1.06em;
+      margin: 0;
+      vertical-align: middle;
+    }
+    .cart-total {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.01em;
+    }
+    .cart-actions {
+      display: flex;
+      gap: 1.1rem;
+      width: 100%;
+      margin-top: 1.2rem;
+      justify-content: flex-end;
+    }
+    .cart-action-btn {
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: 0.01em;
+      font-size: 1.08rem;
+      padding: 0.7rem 2.2rem;
+      min-width: 160px;
+      text-align: center;
+      outline: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      cursor: pointer;
+      border: none;
+    }
+    .cart-action-btn.primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .cart-action-btn.primary:active, .cart-action-btn.primary:hover {
+      background: var(--accent-light);
+    }
+    .cart-action-btn.secondary {
+      background: none;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+    .cart-action-btn.secondary:active, .cart-action-btn.secondary:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    @media (max-width: 600px) {
+      .cart-container {
+        padding: 1.1rem 0.2rem 1.5rem 0.2rem;
+        border-radius: 0.8rem;
+      }
+      .cart-item {
+        gap: 0.7rem;
+        padding: 0.7rem 0.5rem;
+      }
+      .cart-item-img {
+        width: 54px;
+        height: 72px;
+        border-radius: 0.4rem;
+      }
+      .cart-item-title {
+        max-width: 120px;
+        font-size: 0.99rem;
+      }
+      .cart-actions {
+        flex-direction: column;
+        gap: 0.7rem;
+        align-items: stretch;
+        margin-top: 0.7rem;
+      }
+      .cart-action-btn {
+        font-size: 1rem;
+        padding: 0.5rem 1.3rem;
+        min-width: 100px;
+      }
+      .cart-total {
+        font-size: 1.09rem;
+      }
+      .cart-delivery-options {
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="cart-container">
+      <button class="cart-back-btn" onclick="history.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Назад
+      </button>
+      <div class="cart-title">Корзина</div>
+      <div class="cart-list">
+        <!-- Товар 1 -->
+        <div class="cart-item">
+          <img class="cart-item-img" src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=200&q=80" alt="Смарт-наушники SonicBeat">
+          <div class="cart-item-info">
+            <div class="cart-item-title">Смарт-наушники SonicBeat</div>
+            <div class="cart-item-price">9 990 ₽</div>
+            <div class="cart-item-sum">Сумма: <b>19 980 ₽</b></div>
+          </div>
+          <div class="cart-item-counter">
+            <div class="card-counter">
+              <button class="counter-btn">-</button>
+              <span class="counter-value">2</span>
+              <button class="counter-btn">+</button>
+            </div>
+          </div>
+        </div>
+        <!-- Товар 2 -->
+        <div class="cart-item">
+          <img class="cart-item-img" src="https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=200&q=80" alt="Беспроводная колонка BeatBox">
+          <div class="cart-item-info">
+            <div class="cart-item-title">Беспроводная колонка BeatBox</div>
+            <div class="cart-item-price">4 490 ₽</div>
+            <div class="cart-item-sum">Сумма: <b>4 490 ₽</b></div>
+          </div>
+          <div class="cart-item-counter">
+            <div class="card-counter">
+              <button class="counter-btn">-</button>
+              <span class="counter-value">1</span>
+              <button class="counter-btn">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cart-delivery">
+        <div class="cart-delivery-label">Способ доставки:</div>
+        <div class="cart-delivery-options">
+          <label class="cart-radio">
+            <input type="radio" name="delivery" value="cdek" checked>
+            Доставка СДЭК
+          </label>
+          <label class="cart-radio">
+            <input type="radio" name="delivery" value="post">
+            Доставка почтой
+          </label>
+          <label class="cart-radio">
+            <input type="radio" name="delivery" value="pickup">
+            Самовывоз из мастерской
+          </label>
+        </div>
+      </div>
+      <div class="cart-total">
+        Итого: <span style="margin-left:0.6em"><b>24 470 ₽</b></span>
+      </div>
+      <div class="cart-actions">
+        <button class="cart-action-btn primary">Оформить заказ</button>
+        <button class="cart-action-btn secondary">Очистить корзину</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

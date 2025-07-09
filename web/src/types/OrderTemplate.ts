@@ -1,0 +1,1 @@
+export var orderTemplate = "privet, hochu prikypit brelochki {order}, dostavka: {delivery}, summa: {amount}"

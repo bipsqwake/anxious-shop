@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+:root {
+  --accent: #23211c;
+  --accent-light: #23211c;
+  --bg: #faf5ea;
+  --card-bg: transparent;
+  --border: #23211c;
+  --danger: #e46c6c;
+  --text-main: #23211c;
+  --text-sec: #55544d;
+  --radius: 999px;
+  --shadow: none;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: 'Montserrat', Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+  height: 72px;
+  background: var(--card-bg);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.header-logo {
+  height: 48px;
+  width: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e5e5e5;
+}
+.header-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+main {
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: none;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  background: none;
+}
+
+.card {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+.card-img-wrap {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #ededed;
+  border-radius: 0;
+}
+.card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+}
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0.3rem 0 0.2rem 0;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-main);
+}
+.card-desc {
+  font-size: 0.99rem;
+  color: var(--text-sec);
+  margin-bottom: 0.5rem;
+  text-align: left;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.5em * 3);
+  max-height: calc(1.5em * 3);
+}
+.card-price {
+  font-size: 1.05rem;
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 0.2rem;
+  margin-top: 0;
+}
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: stretch;
+  justify-content: center;
+}
+.card-btn,
+.card-counter {
+  height: 48px;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+.card-btn {
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+  font-size: 1rem;
+  padding: 0.65rem 1.3rem;
+  min-width: 110px;
+  text-align: center;
+  outline: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  cursor: pointer;
+}
+.card-btn.detail {
+  background: none;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
+.card-btn.detail:hover, .card-btn.detail:active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+.card-btn {
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+}
+.card-btn.in-cart {
+  display: none;
+}
+.card-btn:active {
+  filter: brightness(0.92);
+}
+
+.card-counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  width: 100%;
+  min-width: 110px;
+  max-width: 100%;
+  background: none;
+  border-radius: var(--radius);
+  border: 2px solid var(--accent);
+  box-sizing: border-box;
+  margin-top: 0.2rem;
+}
+.counter-btn {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 100%;
+  min-height: 100%;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 1.3rem;
+  font-weight: 700;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.counter-btn:active, .counter-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+.counter-value {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+/* Floating cart button (fab) */
+.fab-cart {
+  position: fixed;
+  right: 2.2rem;
+  bottom: 2.2rem;
+  z-index: 100;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  box-shadow: 0 4px 24px 0 rgba(60,90,80,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+}
+.fab-cart:active {
+  background: var(--accent-light);
+}
+.fab-cart .cart-count {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 50%;
+  padding: 2px 7px;
+  min-width: 26px;
+  text-align: center;
+  font-weight: 700;
+  box-shadow: 0 1px 6px 0 rgba(60,90,80,0.15);
+}
+
+@media (max-width: 700px) {
+  main {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+  .catalog-grid {
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card-btn,
+  .card-counter {
+    height: 38px;
+    min-height: 38px;
+  }
+  .counter-btn {
+    width: 38px;
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 500px) {
+  main {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+  }
+  .catalog-grid {
+    gap: 0.3rem;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-btn,
+  .card-counter {
+    height: 38px;
+    min-height: 38px;
+  }
+  .card-btn {
+    font-size: 0.93rem;
+    padding: 0.46rem 0.6rem;
+    min-width: 70px;
+  }
+  .card-actions {
+    gap: 0.2rem;
+  }
+  .card-price {
+    font-size: 0.99rem;
+    margin-bottom: 0.2rem;
+    text-align: left;
+    margin-top: 0;
+  }
+  .card-desc {
+    font-size: 0.93rem;
+    margin-bottom: 0.3rem;
+    text-align: left;
+    line-height: 1.44;
+    min-height: calc(1.44em * 3);
+    max-height: calc(1.44em * 3);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-counter {
+    min-width: 70px;
+    height: 38px;
+  }
+  .counter-btn {
+    width: 38px;
+    font-size: 1.05rem;
+  }
+  .cart-item-img {
+    width: 54px;
+    height: 72px;
+  }
+  .cart-item {
+    padding: 0.5rem 0.5rem;
+    gap: 0.7rem;
+  }
+  .cart-action-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1.3rem;
+  }
+  .admin-table th, .admin-table td {
+    padding: 0.6rem 0.2rem;
+    font-size: 0.95rem;
+  }
+}

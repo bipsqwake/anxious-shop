@@ -1,0 +1,44 @@
+services:
+  web:
+    container_name: anxious-shop-web
+    build: 
+      context: ./web
+      args:
+        VITE_MODE: ${VITE_MODE}
+
+    expose:
+      - "80"
+    networks:
+      - bipsqwake-network
+  api:
+    container_name: anxious-api
+    build:
+      context: ./anxios-shop-api
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_API_PROFILES_ACTIVE}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/anxiosdb
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APPCONFIG_ADMINPASS: ${ADMIN_PASSWORD}
+      APPCONFIG_BOT_NAME: ${BOT_NAME}
+      APPCONFIG_BOT_TOKEN: ${BOT_TOKEN}
+    expose:
+      - "8080"
+    networks:
+      - bipsqwake-network
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_DB=anxiosdb
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - bipsqwake-network
+networks:
+  bipsqwake-network:
+    external: true
+    
