@@ -29,4 +29,15 @@ public class ItemResponseDto {
     private int itemsLeft;
     @JsonProperty
     private int oldPrice;  
+
+    public String getFriendlyString() {
+        return new StringBuilder().append("Название: ").append(name).append("\n")
+        .append("Описание: ").append(description).append("\n")
+        .append("Цена: ").append(price).append("\n")
+        .append("Старая цена: ").append(oldPrice).append("\n")
+        .append("Наличие: ").append(itemsLeft).append("\n")
+        .append("ID: ").append(intName).append("\n")
+        .toString();
+
+    }
 }

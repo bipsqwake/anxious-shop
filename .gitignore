@@ -42,3 +42,4 @@ build/
 .env.production
 current.json
 pipki.json
+anxious_shop_bot*

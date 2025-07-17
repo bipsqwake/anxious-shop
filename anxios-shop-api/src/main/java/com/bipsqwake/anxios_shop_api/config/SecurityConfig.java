@@ -32,7 +32,6 @@ public class SecurityConfig {
 
 	@Bean
     public UserDetailsService userDetailsService(@Value("${appconfig.adminpass}") String adminPass) {
-		log.info(adminPass);
         UserDetails user = User
             .withUsername("user")
             .password("{noop}" + adminPass)

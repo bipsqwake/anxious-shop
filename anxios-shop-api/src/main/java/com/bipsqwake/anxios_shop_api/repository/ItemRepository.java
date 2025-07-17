@@ -21,4 +21,11 @@ public interface ItemRepository extends JpaRepository<Item, String> {
 
     List<Item> findByItemsLeftGreaterThanOrderByIntName(int value);
     Optional<Item> findByIntName(String intName);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT i FROM Item i WHERE i.intName = :intName")
+    Optional<Item> findByIntNameForUpdate(String intName);
+
+    @Query("SELECT i.intName FROM Item i WHERE i.itemsLeft = :itemsLeft ORDER BY i.intName")
+    List<String> findIntNameByItemsLeft(int itemsLeft);
 }
