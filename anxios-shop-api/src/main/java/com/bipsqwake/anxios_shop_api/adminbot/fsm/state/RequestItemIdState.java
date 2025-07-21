@@ -10,8 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.photo.PhotoSize;
 
 import com.bipsqwake.anxios_shop_api.adminbot.AdminBotKeyboards;
 import com.bipsqwake.anxios_shop_api.adminbot.AdminCommand;
-import com.bipsqwake.anxios_shop_api.adminbot.fsm.StateContext;
 import com.bipsqwake.anxios_shop_api.adminbot.fsm.StateException;
+import com.bipsqwake.anxios_shop_api.adminbot.fsm.context.StateContext;
 import com.bipsqwake.anxios_shop_api.dto.ItemResponseDto;
 import com.bipsqwake.anxios_shop_api.service.ItemService;
 
@@ -28,7 +28,7 @@ public class RequestItemIdState implements State {
 
     @Override
     public StateName getName() {
-        return StateName.REQUESTED_ITEM_ID_STATE;
+        return StateName.REQUESTED_ITEM_ID;
     }
 
     @Override
@@ -42,8 +42,8 @@ public class RequestItemIdState implements State {
     public StateName handleText(SilentSender sender, StateContext context, String text) throws StateException  {
         ItemResponseDto item = itemService.getItemByIntName(text);
         if (item == null) {
-            sender.send("Такого товара нет", context.getUserId());
-            return StateName.REQUESTED_ITEM_ID_STATE;
+            sender.send("Такого товара нет", context.getChatId());
+            return StateName.REQUESTED_ITEM_ID;
         } else {
             context.setItemId(text);
             return StateName.ITEM_INFO;
@@ -54,14 +54,14 @@ public class RequestItemIdState implements State {
     public StateName handleCommand(SilentSender sender, StateContext context, AdminCommand command) throws StateException  {
         switch (command) {
             case BACK:
-                return StateName.START_STATE;
+                return StateName.START;
             default:
                 return StateName.STAY;
         }
     }
 
     @Override
-    public StateName handlePhoto(SilentSender sender, StateContext context, List<PhotoSize> photos) {
+    public StateName handlePhoto(SilentSender sender, StateContext context, List<PhotoSize> photos) throws StateException {
         return StateName.STAY;
     }
     

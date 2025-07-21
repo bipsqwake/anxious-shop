@@ -16,6 +16,13 @@ server:
   address: 0.0.0.0
   port: 8080
 appconfig:
+  bot:
+    data:
+      dir: botdata
+  upload:
+    shared:
+      path: /imagestore
+    dir: opt/imagestore
   cors:
     origins: http://localhost:3000, http://192.168.0.66:3000, http://10.5.52.26:3000/
     headers: Authorization, Content-Type

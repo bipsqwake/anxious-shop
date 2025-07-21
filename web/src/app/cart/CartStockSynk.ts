@@ -34,6 +34,16 @@ export function useSyncCartWithStock() {
             }
         });
 
+        let toRemove = [] as string[];
+        items.forEach(item => {
+            if (!Object.keys(actualProducts.data).includes(item.id)) {
+                toRemove.push(item.id)
+                changed = true;
+            }
+        })
+
+        toRemove.forEach(id => removeItem(id));
+
         if (changed) {
             toast('упс! кто-то увёл товар из корзины прямо у вас из под носа. очень жаль!');
         }

@@ -8,7 +8,11 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.bipsqwake.anxios_shop_api.dto.ItemResponseDto;
 import com.bipsqwake.anxios_shop_api.entity.Item;
@@ -19,6 +23,8 @@ public class ItemService {
     
     @Autowired
     private ItemRepository itemRepository;
+
+    private static final int PAGE_SIZE = 10;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -47,5 +53,11 @@ public class ItemService {
     public ItemResponseDto getItemByIntName(String intName) {
         Optional<Item> result = itemRepository.findByIntName(intName);
         return result.isPresent() ? modelMapper.map(result.get(), ItemResponseDto.class) : null;
+    }
+
+    public Page<ItemResponseDto> getItemsPage(int pageNum) {
+        Pageable request = PageRequest.of(pageNum, PAGE_SIZE, Sort.by("intName"));
+        Page<Item> items = itemRepository.findAll(request);
+        return items.map(item -> modelMapper.map(item, ItemResponseDto.class));
     }
 }

@@ -11,9 +11,9 @@ import org.telegram.telegrambots.meta.api.objects.photo.PhotoSize;
 
 import com.bipsqwake.anxios_shop_api.adminbot.AdminBotKeyboards;
 import com.bipsqwake.anxios_shop_api.adminbot.AdminCommand;
-import com.bipsqwake.anxios_shop_api.adminbot.Prompts;
-import com.bipsqwake.anxios_shop_api.adminbot.fsm.StateContext;
+import com.bipsqwake.anxios_shop_api.adminbot.Constants;
 import com.bipsqwake.anxios_shop_api.adminbot.fsm.StateException;
+import com.bipsqwake.anxios_shop_api.adminbot.fsm.context.StateContext;
 import com.bipsqwake.anxios_shop_api.dto.ItemResponseDto;
 import com.bipsqwake.anxios_shop_api.service.ItemService;
 
@@ -68,9 +68,8 @@ public class ItemInfoState implements State {
             return StateName.STAY;
         }
         switch (command) {
-            case ITEM_REMOVE:
             case ITEM_IMG:
-                sender.send(Prompts.CANT_DO_THIS, context.getUserId());
+                sender.send(Constants.CANT_DO_THIS, context.getChatId());
                 onEnter(sender, context);
                 return StateName.STAY;
             case ITEM_NAME:
@@ -80,13 +79,18 @@ public class ItemInfoState implements State {
             case ITEM_STOCK:
                 context.setItemDetailCommand(command);
                 return StateName.ITEM_INFO_DETAILS_UPDATE;
+            case ITEM_REMOVE:
+                return StateName.REMOVE_ITEM;
+            case BACK:
+                context.setItemId(null);
+                return StateName.START;
             default:
                 return StateName.STAY;
         }
     }
 
     @Override
-    public StateName handlePhoto(SilentSender sender, StateContext context, List<PhotoSize> photos) {
+    public StateName handlePhoto(SilentSender sender, StateContext context, List<PhotoSize> photos) throws StateException {
         return StateName.STAY;
     }
 

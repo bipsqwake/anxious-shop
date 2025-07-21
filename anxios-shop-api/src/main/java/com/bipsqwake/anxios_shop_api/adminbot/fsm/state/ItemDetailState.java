@@ -11,9 +11,9 @@ import org.telegram.telegrambots.meta.api.objects.photo.PhotoSize;
 
 import com.bipsqwake.anxios_shop_api.adminbot.AdminBotKeyboards;
 import com.bipsqwake.anxios_shop_api.adminbot.AdminCommand;
-import com.bipsqwake.anxios_shop_api.adminbot.Prompts;
-import com.bipsqwake.anxios_shop_api.adminbot.fsm.StateContext;
+import com.bipsqwake.anxios_shop_api.adminbot.Constants;
 import com.bipsqwake.anxios_shop_api.adminbot.fsm.StateException;
+import com.bipsqwake.anxios_shop_api.adminbot.fsm.context.StateContext;
 import com.bipsqwake.anxios_shop_api.service.AdminService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class ItemDetailState implements State {
     @Override
     public void onEnter(SilentSender sender, StateContext context) throws StateException {
         SendMessage message = new SendMessage(context.getStringChatId(),
-                Prompts.requestMessages.get(context.getItemDetailCommand()));
+                Constants.requestMessages.get(context.getItemDetailCommand()));
         message.setReplyMarkup(AdminBotKeyboards.getBackKeyboard());
         sender.execute(message);
     }
@@ -57,7 +57,7 @@ public class ItemDetailState implements State {
             try {
                 intInput = Integer.parseInt(text);
             } catch (NumberFormatException e) {
-                sender.send(Prompts.NUMBER_REQUIRED, context.getUserId());
+                sender.send(Constants.NUMBER_REQUIRED, context.getChatId());
                 return StateName.ITEM_INFO_DETAILS_UPDATE;
             }
         }
@@ -82,9 +82,9 @@ public class ItemDetailState implements State {
                 break;
         }
         if (success) {
-            sender.send(Prompts.SUCCESSFULL_UPDATE, context.getUserId());
+            sender.send(Constants.SUCCESSFULL_UPDATE, context.getChatId());
         } else {
-            sender.send(Prompts.FAILED_UPDATE, context.getUserId());
+            sender.send(Constants.FAILED_UPDATE, context.getChatId());
         }
         return StateName.ITEM_INFO;
     }
@@ -94,14 +94,14 @@ public class ItemDetailState implements State {
             throws StateException {
         if (command == AdminCommand.BACK) {
             context.setItemId(null);
-            return StateName.START_STATE;
+            return StateName.START;
         } else {
             return StateName.STAY;
         }
     }
 
     @Override
-    public StateName handlePhoto(SilentSender sender, StateContext context, List<PhotoSize> photos) {
+    public StateName handlePhoto(SilentSender sender, StateContext context, List<PhotoSize> photos) throws StateException {
         return StateName.STAY;
     }
 

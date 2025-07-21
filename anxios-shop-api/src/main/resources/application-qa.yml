@@ -1,0 +1,9 @@
+# logging:
+#   level:
+#     root: DEBUG
+appconfig:
+  bot:
+    data:
+      dir: /app/botdata/botdata
+  cors:
+    origins: http://test.anxiousbasil.com, https://test.anxiousbasil.com

@@ -24,9 +24,7 @@ public class AdminService {
     ModelMapper modelMapper = new ModelMapper();
 
     public void postItem(ItemRequestDto item) {
-        log.info(item.toString());
         Item toSave = modelMapper.map(item, Item.class);
-        log.info(toSave.toString());
         itemRepository.save(toSave);
     }
 
@@ -126,5 +124,9 @@ public class AdminService {
         log.info("Here");
         log.info(itemRepository.findIntNameByItemsLeft(0).toString());
         return itemRepository.findIntNameByItemsLeft(0);
+    }
+
+    public void removeItemByIntName(String intName) {
+        itemRepository.deleteByIntName(intName);
     }
 }

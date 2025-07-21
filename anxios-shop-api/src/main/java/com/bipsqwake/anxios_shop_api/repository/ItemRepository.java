@@ -3,6 +3,8 @@ package com.bipsqwake.anxios_shop_api.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +30,8 @@ public interface ItemRepository extends JpaRepository<Item, String> {
 
     @Query("SELECT i.intName FROM Item i WHERE i.itemsLeft = :itemsLeft ORDER BY i.intName")
     List<String> findIntNameByItemsLeft(int itemsLeft);
+
+    void deleteByIntName(String intName);
+
+    Page<Item> findAll(Pageable pageable);
 }

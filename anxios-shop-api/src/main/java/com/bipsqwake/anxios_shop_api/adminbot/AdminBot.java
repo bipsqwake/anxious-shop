@@ -1,11 +1,13 @@
 package com.bipsqwake.anxios_shop_api.adminbot;
 
+import java.io.IOException;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.abilitybots.api.bot.AbilityBot;
+import org.telegram.telegrambots.abilitybots.api.db.DBContext;
 import org.telegram.telegrambots.abilitybots.api.objects.Ability;
 import org.telegram.telegrambots.abilitybots.api.objects.Locality;
 import org.telegram.telegrambots.abilitybots.api.objects.Privacy;
@@ -15,10 +17,11 @@ import org.telegram.telegrambots.longpolling.BotSession;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
 import org.telegram.telegrambots.longpolling.starter.AfterBotRegistration;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.photo.PhotoSize;
 
 import com.bipsqwake.anxios_shop_api.adminbot.fsm.StateException;
 import com.bipsqwake.anxios_shop_api.adminbot.fsm.StatesService;
+import com.bipsqwake.anxios_shop_api.service.ImageStorage;
+import com.bipsqwake.anxios_shop_api.service.TgImageDownloaderService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,16 +29,24 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class AdminBot extends AbilityBot implements SpringLongPollingBot {
     @Value("${appconfig.bot.token}")
-    String token;
+    private String token;
 
     @Autowired
-    StatesService statesService;
+    private StatesService statesService;
+
+    @Autowired
+    private TgImageDownloaderService imageDownloader;
+
+    @Autowired
+    private ImageStorage imageStorage;
 
     private static String ERROR_MESSAGE = "Что-то пошло не так";
 
     @Autowired
-    public AdminBot(@Value("${appconfig.bot.token}") String token, @Value("${appconfig.bot.name}") String name) {
-        super(new OkHttpTelegramClient(token), name);
+    public AdminBot(@Value("${appconfig.bot.token}") String token,
+            @Value("${appconfig.bot.name}") String name,
+            DBContext customContext) {
+        super(new OkHttpTelegramClient(token), name, customContext);
     }
 
     @AfterBotRegistration
@@ -74,35 +85,26 @@ public class AdminBot extends AbilityBot implements SpringLongPollingBot {
 
     public Reply handleReply() {
         return Reply.of((bot, upd) -> {
-            if (upd.hasCallbackQuery()) {
-                AdminCommand command;
-                try {
-                    command = AdminCommand.valueOf(upd.getCallbackQuery().getData());
-                } catch (IllegalArgumentException e) {
-                    log.error("Invalid command name");
-                    silent.send(ERROR_MESSAGE, upd.getCallbackQuery().getMessage().getChatId());
-                    return;
-                }
-                try {
-                    statesService.handleCommand(silent, upd.getCallbackQuery().getMessage().getChatId(), command);
-                } catch (StateException e) {
-                    log.error(e.getMessage());
-                    silent.send(ERROR_MESSAGE, upd.getCallbackQuery().getMessage().getChatId());
-                    return;
-                }
-            } else if (upd.hasMessage() && upd.getMessage().hasText() && !upd.getMessage().isCommand()) {
-                String text = upd.getMessage().getText();
-                try {
+            try {
+                if (upd.hasCallbackQuery()) {
+                    AdminCommand command;
+                    try {
+                        command = AdminCommand.valueOf(upd.getCallbackQuery().getData());
+                        statesService.handleCommand(silent, upd.getCallbackQuery().getMessage().getChatId(), command);
+                    } catch (IllegalArgumentException e) {
+                        statesService.handleText(silent, upd.getCallbackQuery().getMessage().getChatId(), upd.getCallbackQuery().getData());
+                    }
+                    
+                } else if (upd.hasMessage() && upd.getMessage().hasText() && !upd.getMessage().isCommand()) {
+                    String text = upd.getMessage().getText();
                     statesService.handleText(silent, upd.getMessage().getChatId(), text);
-                } catch (StateException e) {
-                    log.error(e.getMessage());
-                    silent.send(ERROR_MESSAGE, upd.getMessage().getChatId());
-                    return;
+                } else if (upd.hasMessage() && !upd.getMessage().hasText() && upd.getMessage().hasPhoto()) {
+                    statesService.handlePhoto(silent, upd.getMessage().getChatId(), upd.getMessage().getPhoto());
                 }
-            } else if (upd.hasMessage() && !upd.getMessage().hasText() && upd.getMessage().hasPhoto()) {
-                for (PhotoSize ps : upd.getMessage().getPhoto()) {
-                    log.info("PHOTO " + ps);
-                }
+            } catch (StateException e) {
+                log.error(e.getMessage());
+                silent.send(ERROR_MESSAGE, upd.getMessage().getChatId());
+                return;
             }
         }, upd -> upd.hasCallbackQuery()
                 || (upd.hasMessage() && upd.getMessage().hasText() && !upd.getMessage().isCommand())

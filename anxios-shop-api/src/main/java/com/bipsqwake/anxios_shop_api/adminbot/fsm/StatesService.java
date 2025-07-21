@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.abilitybots.api.sender.SilentSender;
+import org.telegram.telegrambots.meta.api.objects.photo.PhotoSize;
 
 import com.bipsqwake.anxios_shop_api.adminbot.AdminCommand;
+import com.bipsqwake.anxios_shop_api.adminbot.fsm.context.StateContext;
 import com.bipsqwake.anxios_shop_api.adminbot.fsm.state.State;
 import com.bipsqwake.anxios_shop_api.adminbot.fsm.state.StateName;
 
@@ -33,7 +35,7 @@ public class StatesService {
                 state -> state.getName(),
                 Function.identity()));
         log.info(stateBeans.toString());
-        initialState = StateName.START_STATE;
+        initialState = StateName.START;
     }
 
     public void start(SilentSender sender, Long chatId) throws StateException {
@@ -70,6 +72,18 @@ public class StatesService {
             throw new StateException("Invalid state name");
         }
         StateName toSet = state.handleCommand(sender, context, command);
+        if (toSet != StateName.STAY) {
+            setState(sender, context, toSet);
+        }
+    }
+
+    public void handlePhoto(SilentSender sender, Long chatId, List<PhotoSize> photo) throws StateException {
+        StateContext context = states.get(chatId);
+        State state = stateBeans.get(context.getState());
+        if (state == null) {
+            throw new StateException("Invalid state name");
+        }
+        StateName toSet = state.handlePhoto(sender, context, photo);
         if (toSet != StateName.STAY) {
             setState(sender, context, toSet);
         }

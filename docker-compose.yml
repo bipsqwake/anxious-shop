@@ -10,6 +10,8 @@ services:
       - "80"
     networks:
       - bipsqwake-network
+    volumes:
+      - img-store:${IMG_FRONT_STORE_PATH}
   api:
     container_name: anxious-api
     build:
@@ -22,10 +24,14 @@ services:
       APPCONFIG_ADMINPASS: ${ADMIN_PASSWORD}
       APPCONFIG_BOT_NAME: ${BOT_NAME}
       APPCONFIG_BOT_TOKEN: ${BOT_TOKEN}
+      APPCONFIG_UPLOAD_DIR: ${IMG_API_STORE_PATH}
+      APPCONFIG_UPLOAD_SHARED_PATH: ${IMG_SHARED_PATH}
     expose:
       - "8080"
     networks:
       - bipsqwake-network
+    volumes:
+      - img-store:${IMG_API_STORE_PATH}
 
   db:
     image: 'postgres:13.1-alpine'
@@ -41,4 +47,6 @@ services:
 networks:
   bipsqwake-network:
     external: true
+volumes:
+  img-store:
     
